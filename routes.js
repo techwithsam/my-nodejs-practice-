@@ -20,13 +20,15 @@ const requestHandler = (req, res) => {
         });
         req.on('end', () => {
             const parsedBody = Buffer.concat(body).toString();
-            const message = parsedBody.split('=')[1];
-            fs.writeFileSync('message.txt', message);
+            const message = parsedBody.split('=')[0];
+            fs.writeFileSync('message.txt', message, err => {
+                res.statusCode = 302;
+                res.setHeader('Location', '/');
+                return res.end;
+            });
         });
 
-        res.statusCode = 302;
-        res.setHeader('Location', '/');
-        return res.end;
+
     }
 
     res.setHeader('Content-Type', 'text/html');
